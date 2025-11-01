@@ -1,0 +1,149 @@
+:root{
+  --bg:#f6f8fa;
+  --card:#fff;
+  --accent:#1976d2;
+  --text:#222
+}
+
+body{
+  font-family:Inter,Segoe UI,Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  margin:0
+}
+
+.nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 18px;
+  background:var(--card);
+  box-shadow:0 1px 3px rgba(0,0,0,0.05)
+}
+
+.nav a{
+  margin-right:10px;
+  text-decoration:none;
+  color:var(--accent);
+  font-weight:600
+}
+
+.app-root main{
+  padding:18px
+}
+
+.auth-form{
+  max-width:380px;
+  margin:40px auto;
+  padding:18px;
+  background:var(--card);
+  border-radius:8px
+}
+
+.auth-form input{
+  display:block;
+  margin:8px 0;
+  padding:8px;
+  width:100%
+}
+
+.dashboard .cards{
+  display:flex;
+  gap:12px
+}
+
+.card{
+  background:var(--card);
+  padding:12px;
+  border-radius:8px;
+  min-width:120px
+}
+
+.charts-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin:12px 0
+}
+
+.chart-card{
+  background:var(--card);
+  padding:12px;
+  border-radius:8px
+}
+
+.tx{
+  display:flex;
+  flex-direction: column;
+  gap:12px
+}
+
+.tx-form, .tx-table, .filter-bar{
+  background:var(--card);
+  padding:12px;
+  border-radius:8px;
+  width: 100%;
+}
+
+.filter-bar {
+  margin-bottom: 8px;
+}
+
+.filter-inputs {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.filter-inputs > div {
+  flex: 1;
+}
+
+.filter-inputs label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: #666;
+}
+
+.filter-inputs input,
+.filter-inputs select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: #f0f0f0;
+  color: #666;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse
+}
+
+th,td{
+  padding:8px;
+  text-align:left;
+  border-bottom:1px solid #eee
+}
