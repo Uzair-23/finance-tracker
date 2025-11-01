@@ -1,12 +1,7 @@
 import React from 'react'
+import { formatCurrency } from '../utils/formatCurrency'
 
 export default function AssetsTable({ assets, onEdit, onDelete }) {
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(value)
-  }
 
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString()

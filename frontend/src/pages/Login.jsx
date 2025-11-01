@@ -21,24 +21,28 @@ export default function Login(){
   }
 
   return (
-    <div className="auth-form">
-      <h2>Login</h2>
-      <form onSubmit={submit}>
-        <input 
-          value={email} 
-          onChange={e=>setEmail(e.target.value)} 
-          placeholder="Email" 
-          required 
-        />
-        <input 
-          value={password} 
-          onChange={e=>setPassword(e.target.value)} 
-          type="password" 
-          placeholder="Password" 
-          required 
-        />
-        <button type="submit">Login</button>
-      </form>
+    <div style={{minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--gradient-bg)', backgroundAttachment: 'fixed', padding: '2rem'}}>
+      <div className="auth-form">
+        <h2 style={{background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'}}>Welcome Back</h2>
+        <p style={{textAlign: 'center', color: 'var(--text-light)', marginBottom: '1.5rem'}}>Sign in to your account</p>
+        <form onSubmit={submit}>
+          <input 
+            value={email} 
+            onChange={e=>setEmail(e.target.value)} 
+            placeholder="Email" 
+            type="email"
+            required 
+          />
+          <input 
+            value={password} 
+            onChange={e=>setPassword(e.target.value)} 
+            type="password" 
+            placeholder="Password" 
+            required 
+          />
+          <button type="submit" className="btn-primary btn-block">Login</button>
+        </form>
+      </div>
     </div>
   )
 }

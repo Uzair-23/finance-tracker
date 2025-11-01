@@ -24,17 +24,79 @@ export default function TransactionForm({ onSaved }){
   }
 
   return (
-    <form className="tx-form" onSubmit={submit}>
-      <h4>Add Transaction</h4>
-      <input value={title} onChange={e=>setTitle(e.target.value)} placeholder="Title" required />
-      <input value={amount} onChange={e=>setAmount(e.target.value)} type="number" placeholder="Amount" required />
-      <input value={category} onChange={e=>setCategory(e.target.value)} placeholder="Category" />
-      <select value={type} onChange={e=>setType(e.target.value)}>
-        <option value="expense">Expense</option>
-        <option value="income">Income</option>
-      </select>
-      <input value={date} onChange={e=>setDate(e.target.value)} type="date" />
-      <button type="submit">Save</button>
+    <form className="tx-form card" onSubmit={submit} style={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '1rem',
+      padding: '1.5rem'
+    }}>
+      <h4 style={{
+        background: 'var(--gradient-primary)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+        fontWeight: '700',
+        marginBottom: '0.5rem'
+      }}>Add Transaction</h4>
+      
+      <div className="form-group">
+        <label>Title</label>
+        <input 
+          value={title} 
+          onChange={e=>setTitle(e.target.value)} 
+          placeholder="Transaction title" 
+          required 
+          className="form-input"
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Amount (₹)</label>
+        <input 
+          value={amount} 
+          onChange={e=>setAmount(e.target.value)} 
+          type="number" 
+          placeholder="Enter amount" 
+          required 
+          min="0"
+          step="0.01"
+          className="form-input"
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Category</label>
+        <input 
+          value={category} 
+          onChange={e=>setCategory(e.target.value)} 
+          placeholder="e.g., Food, Salary, Rent" 
+          className="form-input"
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Type</label>
+        <select 
+          value={type} 
+          onChange={e=>setType(e.target.value)}
+          className="form-input"
+        >
+          <option value="expense">Expense</option>
+          <option value="income">Income</option>
+        </select>
+      </div>
+
+      <div className="form-group">
+        <label>Date</label>
+        <input 
+          value={date} 
+          onChange={e=>setDate(e.target.value)} 
+          type="date"
+          className="form-input"
+        />
+      </div>
+
+      <button type="submit" className="btn-primary btn-block">Save Transaction</button>
     </form>
   )
 }

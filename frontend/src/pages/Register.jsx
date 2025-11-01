@@ -22,30 +22,34 @@ export default function Register(){
   }
 
   return (
-    <div className="auth-form">
-      <h2>Register</h2>
-      <form onSubmit={submit}>
-        <input 
-          value={name} 
-          onChange={e=>setName(e.target.value)} 
-          placeholder="Name" 
-          required 
-        />
-        <input 
-          value={email} 
-          onChange={e=>setEmail(e.target.value)} 
-          placeholder="Email" 
-          required 
-        />
-        <input 
-          value={password} 
-          onChange={e=>setPassword(e.target.value)} 
-          type="password" 
-          placeholder="Password" 
-          required 
-        />
-        <button type="submit">Register</button>
-      </form>
+    <div style={{minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--gradient-bg)', backgroundAttachment: 'fixed', padding: '2rem'}}>
+      <div className="auth-form">
+        <h2 style={{background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'}}>Create Account</h2>
+        <p style={{textAlign: 'center', color: 'var(--text-light)', marginBottom: '1.5rem'}}>Join us to manage your finances</p>
+        <form onSubmit={submit}>
+          <input 
+            value={name} 
+            onChange={e=>setName(e.target.value)} 
+            placeholder="Full Name" 
+            required 
+          />
+          <input 
+            value={email} 
+            onChange={e=>setEmail(e.target.value)} 
+            placeholder="Email" 
+            type="email"
+            required 
+          />
+          <input 
+            value={password} 
+            onChange={e=>setPassword(e.target.value)} 
+            type="password" 
+            placeholder="Password" 
+            required 
+          />
+          <button type="submit" className="btn-primary btn-block">Register</button>
+        </form>
+      </div>
     </div>
   )
 }
