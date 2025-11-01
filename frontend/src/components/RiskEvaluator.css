@@ -1,0 +1,108 @@
+.risk-factors ul, .risk-suggestions ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.risk-factors li, .risk-suggestions li {
+  margin-bottom: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  background: var(--bg-light);
+  border-left: 4px solid var(--text-light);
+  transition: all 0.3s ease;
+  position: relative;
+  padding-left: 2.5rem;
+}
+
+.risk-factors li:hover, .risk-suggestions li:hover {
+  transform: translateX(5px);
+}
+
+.risk-factors li.critical {
+  border-left-color: var(--risk-high);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.risk-factors li.warning {
+  border-left-color: var(--risk-medium);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.risk-suggestions li {
+  border-left-color: var(--gradient-start);
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.risk-factors li::before {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+}
+
+.risk-factors li.critical::before {
+  content: "⚠️";
+}
+
+.risk-factors li.warning::before {
+  content: "⚡";
+}
+
+.risk-suggestions li::before {
+  content: "💡";
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+}
+
+.risk-metrics {
+  margin-bottom: 1rem;
+}
+
+.metric {
+  background: rgba(37, 99, 235, 0.05);
+  border: 1px solid rgba(37, 99, 235, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.metric:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+}
+
+.metric .label {
+  color: var(--text-light);
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.metric .value {
+  color: var(--text-dark);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.risk-level {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 2px solid var(--risk-color);
+  background: rgba(var(--risk-high-rgb), 0.05);
+  min-width: 150px;
+}
+
+.risk-badge {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}

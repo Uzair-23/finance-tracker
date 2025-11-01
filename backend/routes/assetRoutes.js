@@ -83,58 +83,92 @@ router.get('/analysis', protect, async (req, res) => {
     const monthlyExpenses = expenses / 3;
 
     // Financial health indicators
-    const savingsRate = (monthlyIncome - monthlyExpenses) / monthlyIncome * 100;
-    const debtToAssetRatio = expenses / totalAssetsValue; // Simplified version
+    const savingsRate = monthlyIncome > 0 ? ((monthlyIncome - monthlyExpenses) / monthlyIncome * 100) : 0;
     
     // Risk evaluation
     const riskFactors = [];
-    const riskLevel = {
-      score: 0,
-      label: 'low',
-      suggestions: []
-    };
+    const suggestions = [];
+    let riskScore = 0;
 
     // Check savings rate
-    if (savingsRate < 20) {
-      riskFactors.push('Low savings rate');
-      riskLevel.score += 2;
-      riskLevel.suggestions.push('Try to save at least 20% of your monthly income');
+    if (savingsRate < 10) {
+      riskFactors.push('Critical: Very low savings rate (below 10%)');
+      suggestions.push('Aim to save at least 10% of your monthly income');
+      riskScore += 3;
+    } else if (savingsRate < 20) {
+      riskFactors.push('Warning: Low savings rate (below 20%)');
+      suggestions.push('Try to increase your savings rate to 20% for better financial security');
+      riskScore += 2;
     }
 
     // Check expense to income ratio
-    if (monthlyExpenses / monthlyIncome > 0.7) {
-      riskFactors.push('High expense to income ratio');
-      riskLevel.score += 2;
-      riskLevel.suggestions.push('Your expenses are too high relative to income');
+    const expenseRatio = monthlyIncome > 0 ? (monthlyExpenses / monthlyIncome * 100) : 100;
+    if (expenseRatio > 90) {
+      riskFactors.push('Critical: Expenses consuming over 90% of income');
+      suggestions.push('Review and reduce non-essential expenses');
+      riskScore += 3;
+    } else if (expenseRatio > 70) {
+      riskFactors.push('Warning: High expense to income ratio');
+      suggestions.push('Consider creating a budget to reduce expenses');
+      riskScore += 2;
     }
 
     // Check asset diversification
     const assetTypes = new Set(assets.map(a => a.type));
-    if (assetTypes.size < 3) {
-      riskFactors.push('Low asset diversification');
-      riskLevel.score += 1;
-      riskLevel.suggestions.push('Consider diversifying your assets');
+    if (assetTypes.size < 2 && totalAssetsValue > 0) {
+      riskFactors.push('Warning: Limited asset diversification');
+      suggestions.push('Consider diversifying your assets across different types');
+      riskScore += 1;
     }
 
-    // Set risk level label based on score
-    if (riskLevel.score >= 4) riskLevel.label = 'high';
-    else if (riskLevel.score >= 2) riskLevel.label = 'medium';
+    // Emergency fund check
+    const liquidAssets = assets
+      .filter(a => a.type === 'cash' || a.type === 'savings')
+      .reduce((sum, a) => sum + a.value, 0);
+    const monthlyExpensesCovered = monthlyExpenses > 0 ? (liquidAssets / monthlyExpenses) : 0;
+    
+    if (monthlyExpensesCovered < 3) {
+      riskFactors.push('Warning: Low emergency fund');
+      suggestions.push('Build an emergency fund to cover at least 3-6 months of expenses');
+      riskScore += 2;
+    }
+
+    // Add investment advice if applicable
+    if (totalAssetsValue > 0 && assetTypes.size === 1 && assets.every(a => a.type === 'savings')) {
+      suggestions.push('Consider investing some savings in diversified assets for potential better returns');
+    }
+
+    // Add income stability check
+    const incomeTransactions = transactions.filter(t => t.type === 'income');
+    const hasRegularIncome = incomeTransactions.length >= 3;
+    if (!hasRegularIncome) {
+      riskFactors.push('Warning: Irregular income pattern');
+      suggestions.push('Consider building a larger emergency fund due to income variability');
+      riskScore += 1;
+    }
+
+    // Determine overall risk level
+    let riskLevel = 'low';
+    if (riskScore >= 6) {
+      riskLevel = 'high';
+    } else if (riskScore >= 3) {
+      riskLevel = 'medium';
+    }
 
     res.json({
       summary: {
-        totalAssetsValue,
         monthlyIncome,
         monthlyExpenses,
-        savingsRate
-      },
-      metrics: {
-        debtToAssetRatio,
-        expenseToIncomeRatio: monthlyExpenses / monthlyIncome
+        savingsRate,
+        totalAssetsValue,
+        liquidAssets,
+        monthlyExpensesCovered,
+        expenseRatio
       },
       risk: {
-        level: riskLevel.label,
+        level: riskLevel,
         factors: riskFactors,
-        suggestions: riskLevel.suggestions
+        suggestions
       }
     });
   } catch (err) {

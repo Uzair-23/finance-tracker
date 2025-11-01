@@ -85,4 +85,78 @@ router.get('/summary/stats', protect, async (req, res) => {
   }
 });
 
+// Financial Risk Evaluation endpoint
+router.get('/evaluate-risk', protect, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    
+    // Get transactions from the last month
+    const lastMonth = new Date();
+    lastMonth.setMonth(lastMonth.getMonth() - 1);
+    
+    const txs = await Transaction.find({
+      user: userId,
+      date: { $gte: lastMonth }
+    });
+
+    // Calculate monthly income and expenses
+    const monthlyIncome = txs
+      .filter(t => t.type === 'income')
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    const monthlyExpenses = txs
+      .filter(t => t.type === 'expense')
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    // Calculate monthly savings
+    const monthlySavings = monthlyIncome - monthlyExpenses;
+    const savingsPercentage = monthlyIncome > 0 ? (monthlySavings / monthlyIncome) * 100 : 0;
+
+    // Determine risk level
+    let riskLevel;
+    let message;
+    let suggestions = [];
+
+    if (monthlyExpenses > monthlyIncome) {
+      riskLevel = 'high';
+      message = '⚠️ High Risk: Your expenses exceed your income';
+      suggestions = [
+        'Immediately review and cut non-essential expenses',
+        'Look for additional income sources',
+        'Create a strict budget plan'
+      ];
+    } else if (savingsPercentage < 20) {
+      riskLevel = 'medium';
+      message = '⚡ Medium Risk: Your savings rate is below recommended 20%';
+      suggestions = [
+        'Try to increase your savings to at least 20% of income',
+        'Review your monthly subscriptions and recurring expenses',
+        'Consider creating a budget'
+      ];
+    } else {
+      riskLevel = 'safe';
+      message = '✅ Safe: Your finances are well balanced';
+      suggestions = [
+        'Consider investing your savings',
+        'Keep maintaining your good financial habits',
+        'Plan for long-term financial goals'
+      ];
+    }
+
+    res.json({
+      riskLevel,
+      message,
+      suggestions,
+      stats: {
+        monthlyIncome,
+        monthlyExpenses,
+        monthlySavings,
+        savingsPercentage: Math.round(savingsPercentage)
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;
