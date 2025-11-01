@@ -8,6 +8,9 @@ import MarketOverview from '../components/MarketOverview'
 import InsightsWidget from '../components/InsightsWidget'
 import ErrorBoundary from '../components/ErrorBoundary'
 import Toast from '../components/Toast'
+import AssetForm from '../components/AssetForm'
+import AssetsTable from '../components/AssetsTable'
+import RiskEvaluator from '../components/RiskEvaluator'
 import { useAuth } from '../context/AuthContext'
 
 export default function Dashboard(){
@@ -15,10 +18,13 @@ export default function Dashboard(){
   const [summary, setSummary] = useState(null)
   const [toast, setToast] = useState(null)
   const [filters, setFilters] = useState({})
+  const [assets, setAssets] = useState([])
+  const [assetToEdit, setAssetToEdit] = useState(null)
+  const [analysis, setAnalysis] = useState(null)
   const { user } = useAuth()
 
   const load = async () => {
-    try{
+    try {
       // Build query string from filters
       const params = new URLSearchParams()
       if (filters.startDate) params.append('startDate', filters.startDate)
@@ -28,18 +34,39 @@ export default function Dashboard(){
       const queryString = params.toString()
       const url = `/transactions${queryString ? `?${queryString}` : ''}`
       
-      const r = await api.get(url)
-      setTransactions(r.data)
-      const s = await api.get('/transactions/summary/stats')
-      setSummary(s.data)
+      const [txRes, summaryRes, assetsRes, analysisRes] = await Promise.all([
+        api.get(url),
+        api.get('/transactions/summary/stats'),
+        api.get('/assets'),
+        api.get('/assets/analysis')
+      ])
+
+      setTransactions(txRes.data)
+      setSummary(summaryRes.data)
+      setAssets(assetsRes.data)
+      setAnalysis(analysisRes.data)
+
       // overspending alert check
-      if (user && user.monthlyBudget && s.data.totalExpense > user.monthlyBudget){
+      if (user && user.monthlyBudget && summaryRes.data.totalExpense > user.monthlyBudget) {
         setToast(`Alert: You've exceeded your monthly budget of ${user.monthlyBudget}`)
       }
-    }catch(err){ console.error(err) }
+    } catch(err) { 
+      console.error(err)
+      setToast('Failed to load some data. Please try again.')
+    }
   }
 
-  useEffect(()=>{ load() }, [])
+  const deleteAsset = async (id) => {
+    if (!confirm('Delete this asset?')) return
+    try {
+      await api.delete(`/assets/${id}`)
+      load()
+    } catch(err) {
+      setToast('Failed to delete asset')
+    }
+  }
+
+  useEffect(() => { load() }, [])
 
   return (
     <div className="dashboard">
@@ -63,6 +90,30 @@ export default function Dashboard(){
       <section style={{display:'grid',gridTemplateColumns:'1fr 320px',gap:12,marginTop:12}}>
         <MarketOverview />
         <InsightsWidget />
+      </section>
+
+      <section className="risk-analysis">
+        <RiskEvaluator analysis={analysis} />
+      </section>
+
+      <section className="assets-management">
+        <div className="section-header">
+          <h3>Assets Management</h3>
+        </div>
+        <div className="assets-content">
+          <AssetForm 
+            onSaved={() => {
+              load()
+              setAssetToEdit(null)
+            }}
+            existingAsset={assetToEdit}
+          />
+          <AssetsTable 
+            assets={assets}
+            onEdit={setAssetToEdit}
+            onDelete={deleteAsset}
+          />
+        </div>
       </section>
 
       <section className="tx">

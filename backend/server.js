@@ -6,6 +6,7 @@ const authRoutes = require('./routes/authRoutes');
 const txRoutes = require('./routes/transactionRoutes');
 const apiRoutes = require('./routes/apiRoutes');
 const seedRoutes = require('./routes/seedRoutes');
+const assetRoutes = require('./routes/assetRoutes');
 const { errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
@@ -20,6 +21,7 @@ app.get('/', (req, res) => res.send('Finance Management API running'));
 app.use('/api/auth', authRoutes);
 app.use('/api/transactions', txRoutes);
 app.use('/api/external', apiRoutes);
+app.use('/api/assets', assetRoutes);
 
 // Dev-only seed endpoint
 if (process.env.NODE_ENV !== 'production') {
